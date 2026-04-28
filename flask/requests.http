@@ -1,0 +1,40 @@
+@baseUrl = http://localhost:5000/api/personas
+
+### GET - Listar todas las personas
+GET {{baseUrl}}
+
+### GET - Obtener una persona por ID
+GET {{baseUrl}}/1
+
+### POST - Crear una nueva persona
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "documento": "12345678",
+  "direccion": "Calle Falsa 123"
+}
+
+### PUT - Actualizar una persona
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "nombre": "Juan Actualizado",
+  "apellido": "Pérez García",
+  "documento": "87654321",
+  "direccion": "Nueva Dirección 456"
+}
+
+### PATCH - Actualizar parcialmente una persona
+PATCH {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "direccion": "Dirección Modificada"
+}
+
+### DELETE - Eliminar una persona
+DELETE {{baseUrl}}/1
