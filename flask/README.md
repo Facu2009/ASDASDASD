@@ -1,12 +1,7 @@
-# Backend Flask - API de Personas API REST para gestionar personas con Flask y SQLAlchemy.
 
-## Requisitos
-
-- Python 3.9+
-
-## Instalación
-
-### Entorno virtual con uv
+sudo apt update
+sudo apt install python3 python3-pip python3-venv -y
+sudo snap install astral-uv --classic
 
 ```bash
 # Crear entorno virtual
@@ -34,24 +29,4 @@ source .venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt ```
 
 ## Ejecutar el servidor
-
-```bash
 python main.py
-```
-
-El servidor iniciara en `http://localhost:5000`
-
-## Endpoints
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/api/personas` | Listar todas las personas |
-| GET | `/api/personas/{id}` | Obtener una persona por ID |
-| POST | `/api/personas` | Crear una nueva persona |
-| PUT | `/api/personas/{id}` | Actualizar una persona (completo) |
-| PATCH | `/api/personas/{id}` | Actualizar una persona (parcial) |
-| DELETE | `/api/personas/{id}` | Eliminar una persona |
-
-## Probar con VS Code
-
-Abre el archivo `requests.http` y usa las extensiones REST Client o HTTP Client.
