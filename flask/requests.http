@@ -1,10 +1,9 @@
 @baseUrl = http://localhost:5000/api
 
-### POST - Enviar un mensaje a la otra PC
+### POST - Iniciar la cadena (solo lo toca el emisor inicial)
 POST {{baseUrl}}/mensajes/enviar
 Content-Type: application/json
 
 {
-  "ip_destino": "192.168.220.100", 
-  "mensaje": "¡Hola! Este es un mensaje directo sin base de datos."
+  "mensaje": "¡Hola! Este mensaje va a viajar por todas las PCs."
 }
