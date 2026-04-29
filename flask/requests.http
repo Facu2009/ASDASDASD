@@ -5,6 +5,6 @@ POST {{baseUrl}}/mensajes/enviar
 Content-Type: application/json
 
 {
-  "ip_destino": "192.168.10.39", 
+  "ip_destino": "192.168.220.100", 
   "mensaje": "¡Hola! Este es un mensaje directo sin base de datos."
 }

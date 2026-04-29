@@ -15,41 +15,46 @@ def get_ip_local():
 
 @app.route('/api/mensajes/recibir', methods=['POST'])
 def recibir_mensaje():
-    """Ruta RECEPTORA: Escucha, muestra y reenvía el mismo mensaje al origen."""
+    """Ruta RECEPTORA: Recibe, muestra y reenvía el mensaje de vuelta al origen (loop infinito)."""
     data = request.get_json()
     mensaje_texto = data.get('mensaje', 'Mensaje vacío')
     ip_origen = data.get('ip_origen')
 
     print("\n" + "⭐"*20)
-    print(f"📩 NUEVO MENSAJE RECIBIDO:")
+    print(f"📩 MENSAJE RECIBIDO:")
     print(f"   {mensaje_texto}")
+    if ip_origen:
+        print(f"   (de {ip_origen})")
     print("⭐"*20 + "\n")
 
-    # Si viene ip_origen, reenviamos el MISMO mensaje de vuelta (sin ip_origen para no hacer loop)
+    # Siempre reenviamos el mismo mensaje al origen, con nuestra IP para que el rebote continúe
     if ip_origen:
-        def enviar_eco():
+        def reenviar():
             try:
+                ip_local = get_ip_local()
                 url = f"http://{ip_origen}:5000/api/mensajes/recibir"
                 requests.post(
                     url,
-                    json={"mensaje": mensaje_texto},
+                    json={
+                        "mensaje": mensaje_texto,   # mismo mensaje
+                        "ip_origen": ip_local        # nuestra IP para que el otro rebote de vuelta
+                    },
                     timeout=3
                 )
-                print(f"📤 Eco enviado a {ip_origen}: '{mensaje_texto}'")
+                print(f"📤 Reenviado a {ip_origen}: '{mensaje_texto}'")
             except Exception as e:
-                print(f"⚠️  No se pudo enviar eco a {ip_origen}: {str(e)}")
+                print(f"⚠️  No se pudo reenviar a {ip_origen}: {str(e)}")
 
-        # Lo mandamos en un hilo para no bloquear la respuesta HTTP
-        threading.Thread(target=enviar_eco).start()
+        threading.Thread(target=reenviar).start()
 
     return jsonify({
         "status": "ok",
-        "msj": "¡Mensaje recibido fuerte y claro por la otra computadora!"
+        "msj": "Mensaje recibido y rebotado."
     }), 200
 
 @app.route('/api/mensajes/enviar', methods=['POST'])
 def enviar_mensaje():
-    """Ruta EMISORA: Manda un mensaje a otra PC incluyendo nuestra IP."""
+    """Ruta EMISORA: Manda un mensaje a otra PC incluyendo nuestra IP para iniciar el loop."""
     data = request.get_json()
 
     ip_destino = data.get('ip_destino')
@@ -72,7 +77,7 @@ def enviar_mensaje():
         confirmacion = respuesta.json()
 
         return jsonify({
-            "status": "enviado exitosamente",
+            "status": "loop iniciado",
             "destino": ip_destino,
             "respuesta_de_la_otra_pc": confirmacion
         }), 200
@@ -81,7 +86,7 @@ def enviar_mensaje():
         return jsonify({"error": f"No se pudo conectar con {ip_destino}: {str(e)}"}), 500
 
 def iniciar_como_primero():
-    """Pide IP destino y mensaje por consola, luego envía."""
+    """Pide IP destino y mensaje por consola, luego dispara el loop."""
     print("\n" + "="*40)
     print("  MODO INICIADOR - Vos sos el primero")
     print("="*40)
@@ -92,9 +97,8 @@ def iniciar_como_primero():
         print("❌ IP o mensaje vacío. Abortando.")
         return
 
-    # Esperamos a que el servidor Flask arranque
     import time
-    time.sleep(1.5)
+    time.sleep(1.5)  # esperamos que Flask arranque
 
     ip_local = get_ip_local()
     url = f"http://{ip_destino}:5000/api/mensajes/recibir"
@@ -105,7 +109,9 @@ def iniciar_como_primero():
             json={"mensaje": mensaje, "ip_origen": ip_local},
             timeout=5
         )
-        print(f"\n✅ Mensaje enviado. Respuesta: {respuesta.json()}")
+        print(f"\n✅ Loop iniciado. Respuesta: {respuesta.json()}")
+        print("🔁 El mensaje va a rebotar infinitamente entre las dos PCs.")
+        print("   Apagá el servidor (Ctrl+C) para detenerlo.\n")
     except Exception as e:
         print(f"\n❌ No se pudo conectar con {ip_destino}: {str(e)}")
 
@@ -118,7 +124,6 @@ if __name__ == '__main__':
     opcion = input("Elegí 1 o 2: ").strip()
 
     if opcion == "2":
-        # Arrancamos Flask en segundo plano para poder recibir el eco de vuelta
         hilo_servidor = threading.Thread(
             target=lambda: app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
         )
@@ -127,8 +132,8 @@ if __name__ == '__main__':
 
         iniciar_como_primero()
 
-        print("\n🟢 Servidor activo, esperando respuestas...\n")
+        print("\n🟢 Servidor activo, rebotando mensajes...\n")
         hilo_servidor.join()
     else:
-        print("\n🟢 Esperando mensajes entrantes...\n")
+        print("\n🟢 Esperando el primer mensaje...\n")
         app.run(host='0.0.0.0', port=5000, debug=True)

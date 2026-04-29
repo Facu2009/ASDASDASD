@@ -14,19 +14,5 @@ source .venv/bin/activate  # Linux/Mac
 # Instalar dependencias
 uv pip install -r requirements.txt
 ```
-
-### Entorno virtual con venv (alternativo)
-
-```bash
-# Crear entorno virtual
-python -m venv .venv
-
-# Activar entorno virtual
-source .venv/bin/activate  # Linux/Mac
-.venv\Scripts\activate     # Windows
-
-# Instalar dependencias
-pip install -r requirements.txt ```
-
 ## Ejecutar el servidor
 python main.py
