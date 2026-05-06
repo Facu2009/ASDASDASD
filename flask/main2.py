@@ -1,4 +1,4 @@
-#mandar 
+#ESCUCHAR
 
 import sys
 import os
@@ -10,8 +10,8 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # --- CONFIGURACIÓN ---
-DESTINATION_URL = "http://192.168.220.100:35371/"
-MY_PORT = 13791
+DESTINATION_URL = "http://192.168.220.119:2096/"
+MY_PORT = 25721
 MY_NAME = "Facundo Rodriguez"
 LIMITE_CONTADOR = 40
 
