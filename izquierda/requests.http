@@ -1,0 +1,11 @@
+
+@baseUrl = http://localhost:5000/api
+
+### POST - Iniciar la cadena manualmente (solo lo toca el emisor inicial)
+POST {{baseUrl}}/mensajes/enviar
+Content-Type: application/json
+
+{
+  "mensaje": "¡Hola! Este mensaje va a viajar por todas las PCs.",
+  "contador": 0
+}
