@@ -25,7 +25,7 @@ def receive():
     """Endpoint que recibe el paquete, modifica el mensaje y retransmite."""
     data = request.get_json()
 
-    original_msg = data.get('message', '')
+    original_msg = data.get('name', '')
     counter      = data.get('counter', 0)
     repetidores  = data.get('repetidores', [])
 
@@ -42,7 +42,7 @@ def receive():
 
     new_counter = counter + 1
     payload = {
-        'message':    MY_NAME,
+        'name':    MY_NAME,
         'counter':    new_counter,
         'repetidores': repetidores
     }
@@ -65,7 +65,7 @@ def manual_sender():
             user_input = input("> ")
             if user_input.strip():
                 payload = {
-                    'message':    MY_NAME,
+                    'name':    MY_NAME,
                     'counter':    0,
                     'repetidores': [MY_NAME]
                 }
