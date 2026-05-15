@@ -3,6 +3,7 @@ import os
 import threading
 import requests
 import logging
+import json
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 
@@ -25,7 +26,7 @@ def receive():
     """Endpoint que recibe el paquete, modifica el mensaje y retransmite."""
     data = request.get_json()
 
-    original_msg = data.get('name', '')
+    original_msg = data.get('message', '')
     counter      = data.get('counter', 0)
     repetidores  = data.get('repetidores', [])
 
@@ -42,13 +43,13 @@ def receive():
 
     new_counter = counter + 1
     payload = {
-        'name':    MY_NAME,
+        'name':       MY_NAME,
         'counter':    new_counter,
         'repetidores': repetidores
     }
 
     try:
-        requests.post(DESTINATION_URL, json=payload, timeout=3)
+        requests.post(DESTINATION_URL, data=json.dumps(payload, indent=4), headers={'Content-Type': 'application/json'}, timeout=3)
         print(f"[RETRANSMITIDO] Mensaje cambiado a '{MY_NAME}' enviado a {DESTINATION_URL}")
     except Exception as e:
         print(f"[ERROR] No se pudo retransmitir: {e}")
@@ -65,7 +66,7 @@ def manual_sender():
             user_input = input("> ")
             if user_input.strip():
                 payload = {
-                    'name':    MY_NAME,
+                    'message':    MY_NAME,
                     'counter':    0,
                     'repetidores': [MY_NAME]
                 }
